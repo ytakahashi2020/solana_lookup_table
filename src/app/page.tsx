@@ -9,6 +9,7 @@ import {
   useWallet,
   useAnchorWallet,
 } from "@solana/wallet-adapter-react";
+type CsvDataType = string;
 
 const LookupTableComponent: React.FC = () => {
   const { publicKey, connected } = useWallet();
@@ -18,15 +19,16 @@ const LookupTableComponent: React.FC = () => {
   const [resultUrl, setResultUrl] = useState<string>("");
   const [lookupTableAddress, setLookupTableAddress] = useState("");
 
-  const [csvData, setCsvData] = useState([]);
+  const [csvData, setCsvData] = useState<CsvDataType[]>([]);
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = (event: any) => {
     const file = event.target.files[0];
     if (file) {
       Papa.parse(file, {
         header: false,
         complete: (results) => {
-          setCsvData(results.data);
+          const data = results.data as string[];
+          setCsvData(data);
         },
         error: (error) => {
           console.error("CSVの解析中にエラーが発生しました:", error);
@@ -37,6 +39,10 @@ const LookupTableComponent: React.FC = () => {
   };
   const handleLookup = async () => {
     if (!connected) {
+      setStatus("ウォレットが接続されていません");
+      return;
+    }
+    if (!wallet) {
       setStatus("ウォレットが接続されていません");
       return;
     }

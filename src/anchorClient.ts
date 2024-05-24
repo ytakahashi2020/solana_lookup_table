@@ -12,7 +12,7 @@ import { AnchorWallet } from "@solana/wallet-adapter-react";
 export async function createLookupTable(
   wallet: AnchorWallet,
   connection: Connection,
-  csvData
+  csvData: any
 ) {
   let blockhash = await connection
     .getLatestBlockhash()
@@ -21,7 +21,9 @@ export async function createLookupTable(
   console.log("createLookupTableに渡されたcsvData:", csvData); // デバッグ用
 
   // CSVデータからPublicKeyのリストを作成
-  const addresses = csvData.map((address) => new PublicKey(address.toString()));
+  const addresses = csvData.map(
+    (address: any) => new PublicKey(address.toString())
+  );
 
   // 必要なアドレスを追加
   addresses.push(wallet.publicKey);
